@@ -1,0 +1,12 @@
+
+@media (min-width: 1200px) {
+    .container{
+        max-width: 800px;
+        margin-left: 50px;
+        align: left;
+    }
+}
+
+input-group {
+  align: center;
+}
