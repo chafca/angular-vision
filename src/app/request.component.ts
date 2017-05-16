@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { RequestService } from './request.service';
 import * as myLinks from './links';
 
@@ -14,6 +14,7 @@ export class RequestComponent implements OnInit {
 	selectedRequest: string;
 	urls: string[];
 	requests: string[];
+  @Output() myEvent = new EventEmitter();
 
 	constructor(
 		private requestService: RequestService
@@ -44,7 +45,8 @@ export class RequestComponent implements OnInit {
 	}
 
 	sendRequest(req: string): void{
-		this.requestService.setRequest(req);
+		this.requestService.httpRequest(req)
+                        .subscribe(json => this.myEvent.emit(json));
 	}
 
 }

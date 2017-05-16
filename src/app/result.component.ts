@@ -1,116 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
-	selector: 'tab-result',
+	selector: 'ResultComponent',
 	templateUrl : './result.component.html',
 	styleUrls : ['./result.component.css']
 })
 
-export class ResultComponent implements OnInit {
+export class ResultComponent {
 	result: Object;
 	listKeys: string[] = [];
 	isArray: boolean;
-
-	ngOnInit() {
-		var obj : Object = [
-		  {
-		    "id": "59196e6a7d84c2241abe2c0b",
-		    "index": 0,
-		    "guid": "a0d01313-f1dd-4fa3-b955-d5d51b5b4b35",
-		    "isActive": false,
-		    "balance": "$3,005.27",
-		    "picture": "http://placehold.it/32x32",
-		    "age": 33,
-		    "eyeColor": "green",
-		    "name": "Katie Horne",
-		    "gender": "female",
-		    "company": "COMBOGENE",
-		    "email": "katiehorne@combogene.com",
-		    "phone": "+1 (972) 486-3266",
-		    "address": "612 Wythe Avenue, Maplewood, Hawaii, 3740",
-		    "about": "Cillum ut minim amet velit quis quis ex nostrud sint incididunt cupidatat sit ullamco aliquip. Duis voluptate pariatur aute consectetur consequat culpa adipisicing occaecat. Incididunt ex occaecat incididunt mollit officia nulla qui incididunt ut ex anim. Do officia deserunt duis ut occaecat sunt id dolor ut velit.\r\n",
-		    "registered": "2017-02-18T07:11:48 -01:00",
-		    "latitude": -30.323605,
-		    "longitude": 123.611532,
-			"socialNetwork" : {
-				"facebook" : "KatieHorne265",
-				"twitter" : "Kat_H",
-				"linkedin" : "katiehorne-505a4eze"
-			},
-			"friends": [
-		      {
-		        "id": 0,
-		        "name": "Larsen Dotson"
-		      },
-		      {
-		        "id": 1,
-		        "name": "Boyle Vincent"
-		      },
-		      {
-		        "id": 2,
-		        "name": "Mariana Moody"
-		      }
-		    ],
-		    "tags": [
-		      "duis",
-		      "ut",
-		      "incididunt",
-		      "cillum",
-		      "velit",
-		      "labore",
-		      "proident"
-		    ],
-		    "greeting": "Hello, Katie Horne! You have 10 unread messages.",
-		    "favoriteFruit": "banana"
-		  },
-		  {
-		    "id": "59196e6ab6c8677aa0ddd554",
-		    "index": 1,
-		    "guid": "dbe2085d-bda1-480b-a52f-72018091178d",
-		    "isActive": false,
-		    "balance": "$2,071.24",
-		    "picture": "http://placehold.it/32x32",
-		    "age": 22,
-		    "eyeColor": "green",
-		    "name": "Kirsten Hughes",
-		    "gender": "female",
-		    "company": "STELAECOR",
-		    "email": "kirstenhughes@stelaecor.com",
-		    "phone": "+1 (881) 444-3912",
-		    "address": "688 Apollo Street, Hannasville, Louisiana, 8834",
-		    "about": "Velit irure veniam cupidatat esse proident. Elit ullamco laboris ex ut magna ullamco commodo eiusmod aliquip. Eiusmod ex eiusmod voluptate irure officia quis excepteur reprehenderit. Officia consequat aute ex esse deserunt cupidatat excepteur est irure consectetur nulla esse velit magna. Ad exercitation ex consequat laborum non aliquip.\r\n",
-		    "registered": "2015-04-15T07:59:15 -02:00",
-		    "latitude": -87.427638,
-		    "longitude": 176.811032,
-			"friends": [
-		      {
-		        "id": 0,
-		        "name": "Lottie Dixon"
-		      },
-		      {
-		        "id": 1,
-		        "name": "Mckenzie Cote"
-		      },
-		      {
-		        "id": 2,
-		        "name": "Fleming Lopez"
-		      }
-		    ],
-		    "tags": [
-		      "ut",
-		      "officia",
-		      "nisi",
-		      "dolor",
-		      "irure",
-		      "quis",
-		      "id"
-		    ],
-		    "greeting": "Hello, Kirsten Hughes! You have 2 unread messages.",
-		    "favoriteFruit": "strawberry"
-		  }
-		];
-		this.initTab(obj);
-	}
 
 	initTab(resp : Object) {
 		this.result = resp;
