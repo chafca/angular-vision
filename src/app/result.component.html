@@ -1,5 +1,5 @@
 <RequestComponent (myEvent)="initTab($event)"></RequestComponent>
-<div *ngIf="result">
+<div *ngIf="results || result">
 	<div class="form-group">
 		<button (click)=download() class="btn btn-primary">Download</button>
 	</div>
@@ -8,21 +8,21 @@
 			<tr>
 				<th *ngFor="let key of listKeys"> {{ key }} </th>
 			</tr>
-			<tr *ngFor="let res of result">
+			<tr *ngFor="let res of results">
 				<td *ngFor="let key of listKeys">
-					{{ getElemByKey(res, key, 0) }}
+					{{ getElemByKey(res, key) }}
 				</td>
 			</tr>
 		</table>
 	</div>
 	<ng-template #elseblck>
-		<table>
+		<table class="table table-bordered table-condensed">
 			<tr>
 				<th *ngFor="let key of listKeys"> {{ key }} </th>
 			</tr>
 			<tr>
 				<td *ngFor="let key of listKeys">
-					{{ getElemByKey(res, key, 0) }}
+					{{ getElemByKey(result, key) }}
 				</td>
 			</tr>
 		</table>

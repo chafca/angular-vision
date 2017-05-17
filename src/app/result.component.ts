@@ -8,67 +8,88 @@ import { Component } from '@angular/core';
 
 export class ResultComponent {
 	result: Object;
+	results : Object[];
 	listKeys: string[] = [];
 	isArray: boolean;
 
-	initTab(resp : Object) {
-		this.result = resp;
-		this.isArray = this.result.constructor == Array;
-		if (this.isArray) {
-			this.analyzeObject(this.result[0], this.listKeys, "");
+	initTab(resp : any) {
+		this.isArray = resp.constructor === Array;
+		if(this.isArray) {
+			this.results = resp;
+			for(var r of this.results) {
+				var tmpList: string[] = [];
+				this._analyzeObject(r, tmpList, '')
+				this.listKeys = this._unionLists(this.listKeys, tmpList);
+			}
 		}
 		else {
-			this.analyzeObject(this.result, this.listKeys, "");
+			this.result = resp;
+			this._analyzeObject(this.result, this.listKeys, '');
 		}
 	}
 
-	private analyzeObject(obj : Object, finalList : string[], parent : string) {
+	private _analyzeObject(obj : Object, finalList : string[], parent : string) {
 		var currentList : string[] = Object.keys(obj);
 		for (var elem of currentList) {
-			var fieldType = obj[elem].constructor;
-			switch (fieldType) {
-				case Object:
-					var elemName = parent + elem + "_";
-					this.analyzeObject(obj[elem], finalList, elemName);
-					break;
-				case Array:
-					var arrayName = parent + elem + "_";
-					finalList.push(arrayName + "array");
-					if (obj[elem][0].constructor == Object)
-						this.analyzeObject(obj[elem][0], finalList, arrayName);
-					break;
-				default:
-					var finalName = parent + elem;
-					finalList.push(finalName);
-					break;
+			if (obj[elem] !== null) {
+				var fieldType = obj[elem].constructor;
+				switch (fieldType) {
+					case Object:
+						var elemName = parent + elem + '_';
+						this._analyzeObject(obj[elem], finalList, elemName);
+						break;
+					case Array:
+						var arrayName = parent + elem + '_';
+						finalList.push(arrayName + 'array');
+						break;
+					default:
+						var finalName = parent + elem;
+						finalList.push(finalName);
+						break;
+				}
 			}
+			else
+				finalList.push(parent + elem);
 		}
 	}
 
 	getElemByKey(res : Object, key : string) : string {
-		if ( !key.includes("_") )
+		if ( !key.includes('_') )
 			return res[key];
 		else {
-			if ( key.includes("_array") ) {
-				var newKey = key.split("_")[0]
-				if (res[newKey][0].constructor == Object)
-					return "ARRAY";
+			if ( key.includes('_array') ) {
+				var newKey = key.split('_')[0]
+				if(res[newKey].length == 0)
+					return null;
+				else if (res[newKey][0].constructor == Object)
+					return 'ARRAY';
 				else
 					return res[newKey]
 			}
 			else {
-				var keys = key.split("_")
+				var keys = key.split('_')
 				var obj = res[keys[0]]
-				if (obj.constructor == Object) {
-					var newKey = keys.slice(1).join("_");
-					return this.getElemByKey(obj, newKey);
+				if (obj != null) {
+					if (obj.constructor == Object) {
+						var newKey = keys.slice(1).join('_');
+						return this.getElemByKey(obj, newKey);
+					}
+					else if (obj.constructor == Array) {
+						var newKey = keys.slice(1).join('_');
+						return this.getElemByKey(obj[0], newKey);
+					}
 				}
-				else if (obj.constructor == Array) {
-					var newKey = keys.slice(1).join("_");
-					return this.getElemByKey(obj[0], newKey);
+				else {
+					return null;
 				}
 			}
 		}
+	}
+
+	private _unionLists(a : string[], b : string[]) : string[] {
+		return a.concat(b.filter((el) => {
+			return a.indexOf(el) === -1;
+		}));
 	}
 
 	download(){
