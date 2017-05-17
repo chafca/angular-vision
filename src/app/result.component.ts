@@ -94,7 +94,13 @@ export class ResultComponent {
 
 	download(){
 			var filename = "file";
-			var csvData = this.jsonToCSV(this.result);
+			var csvData = '';
+			if (this.result != null) {
+				csvData = this.jsonToCSV(this.result)
+			}
+			if (this.results != null) {
+				csvData = this.jsonToCSV(this.results)
+			}
 			var a: any = document.createElement("a");
 			a.setAttribute('style', 'display:none;');
 			document.body.appendChild(a);
@@ -117,10 +123,8 @@ export class ResultComponent {
 
 	// convert Json to CSV data
 	jsonToCSV(objArray:any) {
-			var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
 			var str = '';
 			var row = "";
-
 			for (var index in objArray[0]) {
 					//Now convert each value to string and comma-seprated
 					row += index + ',';
@@ -129,12 +133,12 @@ export class ResultComponent {
 			//append Label row with line break
 			str += row + '\r\n';
 
-			for (var i = 0; i < array.length; i++) {
+			for (var i = 0; i < objArray.length; i++) {
 					var line = '';
-					for (var index in array[i]) {
+					for (var index in objArray[i]) {
 							if (line != '') line += ','
 
-							line += '"'+array[i][index]+'"';
+							line += '"'+objArray[i][index]+'"';
 					}
 
 					str += line + '\r\n';
