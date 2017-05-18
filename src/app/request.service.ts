@@ -15,15 +15,14 @@ export class RequestService {
 	];
 	requests = [
 		'{"bool":{"must":%5B{"prefix":{"numerocommandeunique":"CCL"}}%5D,"must_not":%5B{"term":{"numeroannonceur":"00000006"}}%5D}}',
-		'{"bool":{"must":%5B{"prefix":{"numerocommandeunique":"CCL"}}%5D,"must_not":%5B{"term":{"numeroannonceur":"00000006"}}%5D}}',
-		'{"bool":{"must":%5B{"prefix":{"numerocommandeunique":"CCL"}}%5D,"must_not":%5B{"term":{"numeroannonceur":"00000006"}}%5D}}',
+		'{"bool":{"must":%5B{"prefix":{"numerocommandeunique":"CC"}}%5D,"must_not":%5B{"term":{"numeroannonceur":"00000006"}}%5D}}',
+		'{"bool":{"must":%5B{"prefix":{"numerocommandeunique":"C"}}%5D,"must_not":%5B{"term":{"numeroannonceur":"00000006"}}%5D}}',
 		'{"bool":{"must":%5B{"prefix":{"numerocommandeunique":"CCL"}}%5D,"must_not":%5B{"term":{"numeroannonceur":"00000006"}}%5D}}'
 	];
 
   constructor(private http: Http) {}
 
 	httpRequest(req: string): Observable<Object[]> {
-    console.log("request: ", req);
     var json = this.http.get(req)
                         .map((res:Response) => res.json())
                         .catch(this._handleError);
@@ -31,7 +30,6 @@ export class RequestService {
 	}
 
   private _handleError(error: any): Promise<any> {
-      console.error('An error occurred', error);
       return Promise.reject(error.message || error);
   }
 }

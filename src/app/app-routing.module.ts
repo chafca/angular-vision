@@ -5,7 +5,7 @@ import { RequestComponent } from './request.component';
 import { ResultComponent } from './result.component';
 
 const routes: Routes = [
-    { path: '', redirectTo: '/result', pathMatch: 'full' },
+    { path: '', redirectTo: '/', pathMatch: 'full' },
     { path: 'request', component: RequestComponent },
     { path: 'result', component: ResultComponent }
 ];

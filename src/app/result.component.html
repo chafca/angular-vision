@@ -1,8 +1,13 @@
 <RequestComponent (jsonEvent)="initTab($event)"></RequestComponent>
-<div (busyEvent)=getBusy($event)  *ngIf="results || result">
-	<div class="form-group">
-		<button (click)=download() class="btn btn-primary">Download</button>
-	</div>
+<div *ngIf="results || result">
+  <div class="form-group">
+    <div *ngFor="let list of lists" class="form-group">
+      <input type="radio" (click)="onSelect(list)" name="li" class="radio">{{list}}<br>
+    </div>
+    <input type="radio" (click)="onSelectAll()" name="li" class="radio"> TOUT <br>
+    <p><p>
+    <button (click)=download(list) class="btn btn-primary">Download</button>
+  </div>
 	<div *ngIf="isArray; else elseBlck">
 		<table class="table table-bordered table-condensed">
 			<tr>

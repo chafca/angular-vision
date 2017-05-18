@@ -9,17 +9,20 @@
 
   <div class="form-group">
     <select class="form-control" #r (change)="changeReq(r.value)">
-      <option style="display:none" disabled selected value> -- select Query  -- </option>
+      <option style="display:none" disabled selected value> -- select a Query  -- </option>
       <option *ngFor="let request of requests" (click)="changeReq(request)">{{request}}</option>
     </select>
   </div>
 
   <div class="form-group">
     <label>Request: </label>
-      <textarea value="{{req}}" ([ngModel])="req" #newReq class="form-control input-lg"> </textarea>
+      <textarea value="{{req}}" ([ngModel])="req" #newReq class="form-control input-lg"
+                  placeholder="you can insert an attribute at the end of your request example: 1..99 that means the first hundred value">
+      </textarea>
       <p><p>
       <button (click)="sendRequest(newReq.value)" class="btn btn-primary">Envoyer</button>
   </div>
   <div [ngBusy]="busy">
   </div>
+
 </div>

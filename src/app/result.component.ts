@@ -10,24 +10,62 @@ import { Http } from '@angular/http';
 export class ResultComponent {
 	result: Object;
 	results : Object[];
+  resultsPrinted: Object[];
 	listKeys: string[] = [];
 	isArray: boolean;
+  lists: number[] = [];
 
 	initTab(resp : any) {
-		this.isArray = resp.constructor === Array;
+		this.isArray = resp[1].constructor === Array;
 		if(this.isArray) {
-			this.results = resp;
-			for(var r of this.results) {
+			this.results = resp[1];
+      this.resultsPrinted = this.jsonSlice(resp);
+			for(var r of this.resultsPrinted) {
 				var tmpList: string[] = [];
 				this._analyzeObject(r, tmpList, '')
 				this.listKeys = this._unionLists(this.listKeys, tmpList);
 			}
 		}
 		else {
-			this.result = resp;
+			this.result = resp[1];
 			this._analyzeObject(this.result, this.listKeys, '');
 		}
 	}
+
+  jsonSlice(resp: any): Object[]{
+    if(resp[1].length >= 1000){
+      var n = resp[1].length / 1000;
+      for(var i=0; i<n ; i++){
+        this.lists[i] = i*1000;
+        if (n==1)
+          this.lists[i] = resp[1].length - n * 1000;
+      }
+    }
+
+    if (resp[0].lastIndexOf('}') == (resp[0].length-1)){
+      return resp[1];
+    }
+    else {
+      var res = resp[0].substring(resp[0].lastIndexOf('}') + 1);
+      var begin = parseInt( res.substr(0, res.indexOf('..')) );
+      var end = parseInt( res.substr(res.lastIndexOf('.')+1, (res.length-1)) );
+      console.log("res: ", res, "begin: ", begin, "end: ", end);
+      return resp[1].slice(begin, end);
+    }
+  }
+
+  onSelect(list: any): void {
+    if(this.results.length < list+1000)
+      this.resultsPrinted = this.results.slice(list, this.results.length);
+    else
+      this.resultsPrinted = this.results.slice(list, list+1000);
+    console.log("resultsPrinted onSelect: ", this.resultsPrinted.length);
+  }
+
+  onSelectAll(list: any): void {
+    this.resultsPrinted = this.results;
+    console.log("resultsPrinted onSelectAll: ", this.resultsPrinted.length);
+  }
 
 	private _analyzeObject(obj : Object, finalList : string[], parent : string) {
 		var currentList : string[] = Object.keys(obj);
@@ -132,8 +170,8 @@ export class ResultComponent {
 			if (this.result != null) {
 				csvData = this.jsonToCSV(this.result)
 			}
-			if (this.results != null) {
-				csvData = this.jsonToCSV(this.results)
+			if (this.resultsPrinted != null) {
+				csvData = this.jsonToCSV(this.resultsPrinted)
 			}
 			var a: any = document.createElement("a");
 			a.setAttribute('style', 'display:none;');

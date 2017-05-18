@@ -11,12 +11,13 @@ import * as myLinks from './links';
 })
 
 export class RequestComponent implements OnInit {
-	req: string;
+  req: string;
 	selectedUrl: string;
 	selectedRequest: string;
 	urls: string[];
 	requests: string[];
   @Output() jsonEvent = new EventEmitter();
+  @Output() reqEvent = new EventEmitter();
   busy: Subscription;
 
 	constructor(
@@ -48,10 +49,9 @@ export class RequestComponent implements OnInit {
 
 	sendRequest(newReq: string): void{
     this.req = newReq;
-    console.log("sendRequest: ", this.req);
-		this.busy = this.requestService.httpRequest(this.req)
-                        .subscribe(json => this.jsonEvent.emit(json));
-    this.ngOnInit();
+    this.busy = this.requestService.httpRequest(this.req)
+                        .subscribe(json => this.jsonEvent.emit([ newReq, json ]));
+		this.ngOnInit();
 	}
 
 }
