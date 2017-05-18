@@ -59,17 +59,23 @@ export class ResultComponent {
 			return res[key];
 		else {
 			if ( key.includes('_array') ) {
-				var newKey = key.split('_')[0]
+				var newKey = key.split('_')[0];
 				if(res[newKey].length == 0)
 					return null;
-				else if (res[newKey][0].constructor == Object)
-					return 'ARRAY';
+				else if (res[newKey][0].constructor == Object){
+					var str = '[';
+					for (let obj of res[newKey]) {
+					    str += this._objToString(obj) + ',';
+					}
+					str = str.slice(0,-1) + ']';
+					return str;
+				}
 				else
-					return res[newKey]
+					return res[newKey];
 			}
 			else {
-				var keys = key.split('_')
-				var obj = res[keys[0]]
+				var keys = key.split('_');
+				var obj = res[keys[0]];
 				if (obj != null) {
 					if (obj.constructor == Object) {
 						var newKey = keys.slice(1).join('_');
@@ -85,6 +91,33 @@ export class ResultComponent {
 				}
 			}
 		}
+	}
+
+	private _objToString(obj : Object) : string{
+		var str = '';
+		var keys = Object.keys(obj);
+		str += '{';
+		for (let k of keys) {
+		    var kStr = k + ': "';
+			if(obj[k] == null)
+				kStr += 'null';
+			else if (obj[k].constructor === Object)
+				kStr += this._objToString(obj[k]);
+			else if (obj[k].constructor === Array) {
+				kStr += '[';
+				for (let elem of obj[k]) {
+			    	kStr += this._objToString(elem) + ',';
+				}
+				kStr += ']';
+			}
+			else
+				kStr += obj[k];
+			kStr += '",';
+			str += kStr;
+		}
+		str = str.slice(0, -1);
+		str += '}';
+		return str;
 	}
 
 	private _unionLists(a : string[], b : string[]) : string[] {
