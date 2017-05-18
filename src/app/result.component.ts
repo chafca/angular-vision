@@ -208,9 +208,12 @@ export class ResultComponent {
 			for (var i = 0; i < objArray.length; i++) {
 					var line = '';
 					for (var index in objArray[i]) {
-							if (line != '') line += ','
-
-							line += '"'+objArray[i][index]+'"';
+							if (line != '')
+								line += ','
+							if (typeof objArray[i][index] == 'object' && objArray[i][index] != null)
+								line += '"'+this._objToString(objArray[i][index])+'"';
+							else
+								line += '"'+objArray[i][index]+'"';
 					}
 
 					str += line + '\r\n';
