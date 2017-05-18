@@ -1,4 +1,6 @@
 import { Component, Output, EventEmitter, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+
 import { RequestService } from './request.service';
 import * as myLinks from './links';
 
@@ -14,15 +16,15 @@ export class RequestComponent implements OnInit {
 	selectedRequest: string;
 	urls: string[];
 	requests: string[];
-  @Output() myEvent = new EventEmitter();
+  @Output() jsonEvent = new EventEmitter();
+  busy: Subscription;
 
 	constructor(
 		private requestService: RequestService
 	) {}
 
 	ngOnInit(): void {
-		this.requestService.newRequest();
-		this.req = this.requestService.req;
+		this.req = '';
 		this.urls = this.requestService.urls;
 		this.requests = this.requestService.requests;
 	}
@@ -44,9 +46,12 @@ export class RequestComponent implements OnInit {
 			this.req = this.selectedUrl + this.selectedRequest;
 	}
 
-	sendRequest(req: string): void{
-		this.requestService.httpRequest(req)
-                        .subscribe(json => this.myEvent.emit(json));
+	sendRequest(newReq: string): void{
+    this.req = newReq;
+    console.log("sendRequest: ", this.req);
+		this.busy = this.requestService.httpRequest(this.req)
+                        .subscribe(json => this.jsonEvent.emit(json));
+    this.ngOnInit();
 	}
 
 }

@@ -19,33 +19,18 @@ export class RequestService {
 		'{"bool":{"must":%5B{"prefix":{"numerocommandeunique":"CCL"}}%5D,"must_not":%5B{"term":{"numeroannonceur":"00000006"}}%5D}}',
 		'{"bool":{"must":%5B{"prefix":{"numerocommandeunique":"CCL"}}%5D,"must_not":%5B{"term":{"numeroannonceur":"00000006"}}%5D}}'
 	];
-	req: string;
 
   constructor(private http: Http) {}
 
-	newRequest(): void{
-		this.setRequest("");
-	}
-
-	getRequest(): string {
-		return this.req;
-	}
-
-  setRequest(req: string): void{
-    this.req = req;
-  }
-
 	httpRequest(req: string): Observable<Object[]> {
-    this.setRequest(req);
-    console.log(req);
-    var json = this.http.get(this.req)
+    console.log("request: ", req);
+    var json = this.http.get(req)
                         .map((res:Response) => res.json())
-                        .catch(this.handleError);
-    console.log(json);
+                        .catch(this._handleError);
     return json;
 	}
 
-  private handleError(error: any): Promise<any> {
+  private _handleError(error: any): Promise<any> {
       console.error('An error occurred', error);
       return Promise.reject(error.message || error);
   }

@@ -16,11 +16,10 @@
 
   <div class="form-group">
     <label>Request: </label>
-    <textarea value="{{req}}" ([ngModel])="req" class="form-control input-lg"> </textarea>
+      <textarea value="{{req}}" ([ngModel])="req" #newReq class="form-control input-lg"> </textarea>
+      <p><p>
+      <button (click)="sendRequest(newReq.value)" class="btn btn-primary">Envoyer</button>
   </div>
-
-  <div class="form-group" id="butt">
-    <button (click)="sendRequest(req)" class="btn btn-primary">Envoyer</button>
+  <div [ngBusy]="busy">
   </div>
-
 </div>

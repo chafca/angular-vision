@@ -1,5 +1,5 @@
-<RequestComponent (myEvent)="initTab($event)"></RequestComponent>
-<div *ngIf="results || result">
+<RequestComponent (jsonEvent)="initTab($event)"></RequestComponent>
+<div (busyEvent)=getBusy($event)  *ngIf="results || result">
 	<div class="form-group">
 		<button (click)=download() class="btn btn-primary">Download</button>
 	</div>
