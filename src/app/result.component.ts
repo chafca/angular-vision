@@ -10,21 +10,22 @@ import { Http } from '@angular/http';
 export class ResultComponent {
 	result: Object;
 	results : Object[];
-  resultsPrinted: Object[];
+	resultsPrinted: Object[];
 	listKeys: string[] = [];
 	isArray: boolean;
-  lists: number[] = [];
+	lists: number[] = [];
 
 	initTab(resp : any) {
 		this.isArray = resp[1].constructor === Array;
 		if(this.isArray) {
 			this.results = resp[1];
-      this.resultsPrinted = this.jsonSlice(resp);
+			this.resultsPrinted = this.jsonSlice(resp);
 			for(var r of this.resultsPrinted) {
 				var tmpList: string[] = [];
 				this._analyzeObject(r, tmpList, '')
 				this.listKeys = this._unionLists(this.listKeys, tmpList);
 			}
+			this._cleanList(this.listKeys);
 		}
 		else {
 			this.result = resp[1];
@@ -32,40 +33,40 @@ export class ResultComponent {
 		}
 	}
 
-  jsonSlice(resp: any): Object[]{
-    if(resp[1].length >= 1000){
-      var n = resp[1].length / 1000;
-      for(var i=0; i<n ; i++){
-        this.lists[i] = i*1000;
-        if (n==1)
-          this.lists[i] = resp[1].length - n * 1000;
-      }
-    }
+	jsonSlice(resp: any): Object[]{
+		if(resp[1].length >= 1000){
+			var n = resp[1].length / 1000;
+			for(var i=0; i<n ; i++){
+				this.lists[i] = i*1000;
+				if (n==1)
+					this.lists[i] = resp[1].length - n * 1000;
+			}
+		}
 
-    if (resp[0].lastIndexOf('}') == (resp[0].length-1)){
-      return resp[1];
-    }
-    else {
-      var res = resp[0].substring(resp[0].lastIndexOf('}') + 1);
-      var begin = parseInt( res.substr(0, res.indexOf('..')) );
-      var end = parseInt( res.substr(res.lastIndexOf('.')+1, (res.length-1)) );
-      console.log("res: ", res, "begin: ", begin, "end: ", end);
-      return resp[1].slice(begin, end);
-    }
-  }
+		if (resp[0].lastIndexOf('}') == (resp[0].length-1)){
+			return resp[1];
+		}
+		else {
+			var res = resp[0].substring(resp[0].lastIndexOf('}') + 1);
+			var begin = parseInt( res.substr(0, res.indexOf('..')) );
+			var end = parseInt( res.substr(res.lastIndexOf('.')+1, (res.length-1)) );
+			console.log("res: ", res, "begin: ", begin, "end: ", end);
+			return resp[1].slice(begin, end);
+		}
+	}
 
-  onSelect(list: any): void {
-    if(this.results.length < list+1000)
-      this.resultsPrinted = this.results.slice(list, this.results.length);
-    else
-      this.resultsPrinted = this.results.slice(list, list+1000);
-    console.log("resultsPrinted onSelect: ", this.resultsPrinted.length);
-  }
+	onSelect(list: any): void {
+		if(this.results.length < list+1000)
+		this.resultsPrinted = this.results.slice(list, this.results.length);
+		else
+		this.resultsPrinted = this.results.slice(list, list+1000);
+		console.log("resultsPrinted onSelect: ", this.resultsPrinted.length);
+	}
 
-  onSelectAll(list: any): void {
-    this.resultsPrinted = this.results;
-    console.log("resultsPrinted onSelectAll: ", this.resultsPrinted.length);
-  }
+	onSelectAll(list: any): void {
+		this.resultsPrinted = this.results;
+		console.log("resultsPrinted onSelectAll: ", this.resultsPrinted.length);
+	}
 
 	private _analyzeObject(obj : Object, finalList : string[], parent : string) {
 		var currentList : string[] = Object.keys(obj);
@@ -91,10 +92,14 @@ export class ResultComponent {
 				finalList.push(parent + elem);
 		}
 	}
-
+	
 	getElemByKey(res : Object, key : string) : string {
-		if ( !key.includes('_') )
-			return res[key];
+		if ( !key.includes('_') ) {
+			if(res[key] != null && res[key].length > 30)
+				return res[key].slice(0, 30) + '...';
+			else
+				return res[key];
+		}
 		else {
 			if ( key.includes('_array') ) {
 				var newKey = key.split('_')[0];
@@ -103,7 +108,7 @@ export class ResultComponent {
 				else if (res[newKey][0].constructor == Object){
 					var str = '[';
 					for (let obj of res[newKey]) {
-					    str += this._objToString(obj) + ',';
+						str += this._objToString(obj) + ',';
 					}
 					str = str.slice(0,-1) + ']';
 					return str;
@@ -131,12 +136,27 @@ export class ResultComponent {
 		}
 	}
 
+	private _cleanList(list : string[]) {
+		console.log(list.length)
+		var listOfIndexes = [];
+		for(var key of list) {
+			var tmpList = list.filter(elem => elem.startsWith(key + '_'));
+			if (tmpList.length >= 1)
+				listOfIndexes.push(list.indexOf(key))
+		}
+		for(var i = listOfIndexes.length-1; i >=0; i--) {
+			console.log(list.splice(listOfIndexes[i], 1));
+		}
+
+		console.log(list.length)
+	}
+
 	private _objToString(obj : Object) : string{
 		var str = '';
 		var keys = Object.keys(obj);
 		str += '{';
 		for (let k of keys) {
-		    var kStr = k + ': "';
+			var kStr = k + ': "';
 			if(obj[k] == null)
 				kStr += 'null';
 			else if (obj[k].constructor === Object)
@@ -144,7 +164,7 @@ export class ResultComponent {
 			else if (obj[k].constructor === Array) {
 				kStr += '[';
 				for (let elem of obj[k]) {
-			    	kStr += this._objToString(elem) + ',';
+					kStr += this._objToString(elem) + ',';
 				}
 				kStr += ']';
 			}
@@ -165,61 +185,61 @@ export class ResultComponent {
 	}
 
 	download(){
-			var filename = "file";
-			var csvData = '';
-			if (this.result != null) {
-				csvData = this.jsonToCSV(this.result)
-			}
-			if (this.resultsPrinted != null) {
-				csvData = this.jsonToCSV(this.resultsPrinted)
-			}
-			var a: any = document.createElement("a");
-			a.setAttribute('style', 'display:none;');
-			document.body.appendChild(a);
-			var blob = new Blob([csvData], { type: 'text/csv' });
-			var url= window.URL.createObjectURL(blob);
-			a.href = url;
+		var filename = "file";
+		var csvData = '';
+		if (this.result != null) {
+			csvData = this.jsonToCSV(this.result)
+		}
+		if (this.resultsPrinted != null) {
+			csvData = this.jsonToCSV(this.resultsPrinted)
+		}
+		var a: any = document.createElement("a");
+		a.setAttribute('style', 'display:none;');
+		document.body.appendChild(a);
+		var blob = new Blob([csvData], { type: 'text/csv' });
+		var url= window.URL.createObjectURL(blob);
+		a.href = url;
 
-			var isIE = /*@cc_on!@*/false || !!(<any> document).documentMode;
+		var isIE = /*@cc_on!@*/false || !!(<any> document).documentMode;
 
-			if (isIE)
-			{
-					var retVal = navigator.msSaveBlob(blob, filename+'.csv');
-			}
-			else{
-					a.download = filename+'.csv';
-			}
-			// If you will any error in a.download then dont worry about this.
-			a.click();
+		if (isIE)
+		{
+			var retVal = navigator.msSaveBlob(blob, filename+'.csv');
+		}
+		else{
+			a.download = filename+'.csv';
+		}
+		// If you will any error in a.download then dont worry about this.
+		a.click();
 	}
 
 	// convert Json to CSV data
 	jsonToCSV(objArray:any) {
-			var str = '';
-			var row = "";
-			for (var index in objArray[0]) {
-					//Now convert each value to string and comma-seprated
-					row += index + ',';
-			}
-			row = row.slice(0, -1);
-			//append Label row with line break
-			str += row + '\r\n';
+		var str = '';
+		var row = "";
+		for (var index in objArray[0]) {
+			//Now convert each value to string and comma-seprated
+			row += index + ',';
+		}
+		row = row.slice(0, -1);
+		//append Label row with line break
+		str += row + '\r\n';
 
-			for (var i = 0; i < objArray.length; i++) {
-					var line = '';
-					for (var index in objArray[i]) {
-							if (line != '')
-								line += ','
-							if (typeof objArray[i][index] == 'object' && objArray[i][index] != null)
-								line += '"'+this._objToString(objArray[i][index])+'"';
-							else
-								line += '"'+objArray[i][index]+'"';
-					}
-
-					str += line + '\r\n';
+		for (var i = 0; i < objArray.length; i++) {
+			var line = '';
+			for (var index in objArray[i]) {
+				if (line != '')
+				line += ','
+				if (typeof objArray[i][index] == 'object' && objArray[i][index] != null)
+				line += '"'+this._objToString(objArray[i][index])+'"';
+				else
+				line += '"'+objArray[i][index]+'"';
 			}
 
-			return str;
+			str += line + '\r\n';
+		}
+
+		return str;
 	}
 
 }
