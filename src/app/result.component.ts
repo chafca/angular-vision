@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { Http } from '@angular/http';
+import { Component } from '@angular/core';
 
 @Component({
 	selector: 'ResultComponent',
