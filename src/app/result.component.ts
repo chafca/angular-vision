@@ -92,7 +92,7 @@ export class ResultComponent {
 				finalList.push(parent + elem);
 		}
 	}
-	
+
 	getElemByKey(res : Object, key : string) : string {
 		if ( !key.includes('_') ) {
 			if(res[key] != null && res[key].length > 30)
@@ -137,7 +137,6 @@ export class ResultComponent {
 	}
 
 	private _cleanList(list : string[]) {
-		console.log(list.length)
 		var listOfIndexes = [];
 		for(var key of list) {
 			var tmpList = list.filter(elem => elem.startsWith(key + '_'));
@@ -145,10 +144,8 @@ export class ResultComponent {
 				listOfIndexes.push(list.indexOf(key))
 		}
 		for(var i = listOfIndexes.length-1; i >=0; i--) {
-			console.log(list.splice(listOfIndexes[i], 1));
+			list.splice(listOfIndexes[i], 1);
 		}
-
-		console.log(list.length)
 	}
 
 	private _objToString(obj : Object) : string{
